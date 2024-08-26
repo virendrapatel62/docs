@@ -1,0 +1,22 @@
+{
+  "Code Block": {
+    "prefix": "codeblock",
+    "body": ["```${1:language}", "${2:code}", "```", "$0"],
+    "description": "Inserts a code block with language and code placeholders"
+  },
+  "python Code Block": {
+    "prefix": "pythoncode",
+    "body": ["```python", "${1:code}", "```", "$0"],
+    "description": "Inserts a code block with language and code placeholders"
+  },
+  "Insert Header": {
+    "prefix": "header",
+    "body": ["# ${1:Header Text}"],
+    "description": "Inserts an H1 header with a cursor at the text"
+  },
+  "Markdown List": {
+    "prefix": "mdlist",
+    "body": ["- ${1:Item 1}", "- ${2:Item 2}", "- ${3:Item 3}", "$0"],
+    "description": "Inserts a Markdown list with three items"
+  }
+}

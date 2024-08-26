@@ -96,29 +96,29 @@
 
 ### Creating Basic API Views
 
-Function based views
+- Function based views
 
-```python
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+  ```python
+  from rest_framework.decorators import api_view
+  from rest_framework.response import Response
 
-@api_view(['GET'])
-def book_list(request):
-    books = Book.objects.all()
-    serializer = BookSerializer(books, many=True)
-    return Response(serializer.data)
-```
+  @api_view(['GET'])
+  def book_list(request):
+      books = Book.objects.all()
+      serializer = BookSerializer(books, many=True)
+      return Response(serializer.data)
+  ```
 
-Class-Based Views (CBVs)
+- Class-Based Views (CBVs)
 
-```python
-from rest_framework.views import APIView
+  ```python
+  from rest_framework.views import APIView
 
-class BookList(APIView):
-    def get(self, request):
-        books = Book.objects.all()
-        serializer = BookSerializer(books, many=True)
-        return Response(serializer.data)
-```
+  class BookList(APIView):
+      def get(self, request):
+          books = Book.objects.all()
+          serializer = BookSerializer(books, many=True)
+          return Response(serializer.data)
+  ```
 
 These steps provide a strong foundation, introducing you to the key concepts and basic setup of Django Rest Framework. You’ll start building simple APIs using function-based and class-based views, giving you practical experience with DRF right from the start.

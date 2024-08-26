@@ -43,71 +43,88 @@
       ]
   ```
 
+- Create an app
+
+  ```bash
+    cd myproject
+    django-admin startapp books
+  ```
+
+- Add to INSTALLED_APPS
+
+  ```python
+      INSTALLED_APPS = [
+        ...
+        'rest_framework',
+        'books'
+      ]
+  ```
+
 ### Understanding Serializers
 
 - What is a Serializer?
 
-  - Learn how serializers are used to convert complex data types like Django models into JSON and vice versa.
+- Learn how serializers are used to convert complex data types like Django models into JSON and vice versa.
 
 - Creating a Simple Serializer
 
-  - Start by creating a basic serializer for a Django model. For example, if you have a Book model:
+- Start by creating a basic serializer for a Django model. For example, if you have a Book model:
 
-    ```python
-    from rest_framework import serializers
-    from .models import Book
-        class BookSerializer(serializers.Serializer):
-            title = serializers.CharField(max_length=100)
-            author = serializers.CharField(max_length=100)
-            published_date = serializers.DateField()
-    ```
+add the code to books/serializers.py
+
+```python
+from rest_framework import serializers
+from .models import Book
+    class BookSerializer(serializers.Serializer):
+        title = serializers.CharField(max_length=100)
+        author = serializers.CharField(max_length=100)
+```
 
 - Using ModelSerializer
 
-  - Understand the difference between a basic serializer and a ModelSerializer, which provides a shortcut for serializing Django models.
+- Understand the difference between a basic serializer and a ModelSerializer, which provides a shortcut for serializing Django models.
 
-  - A ModelSerializer in Django REST Framework (DRF) is a shortcut for creating serializers that deal with Django models. It automatically generates fields and validators based on the model you specify.
+- A ModelSerializer in Django REST Framework (DRF) is a shortcut for creating serializers that deal with Django models. It automatically generates fields and validators based on the model you specify.
 
-    ```python
-    from django.db import models
+add the code to books/models.py
 
-    class Book(models.Model):
-        title = models.CharField(max_length=100)
-        author = models.CharField(max_length=100)
-        published_date = models.DateField()
-        isbn = models.CharField(max_length=13, unique=True)
-        price = models.DecimalField(max_digits=10, decimal_places=2)
+```python
+from django.db import models
 
-    ```
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.CharField(max_length=100)
 
-    Serializer (serializers.py)
+```
 
-    ```python
-    from rest_framework import serializers
-    from .models import Book
+Serializer (serializers.py)
 
-    class BookSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Book
-            fields = '__all__'
-            # Alternatively, you can specify fields explicitly:
-            # fields = ['title', 'author', 'published_date', 'isbn', 'price']
-    ```
+```python
+from rest_framework import serializers
+from .models import Book
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+        # Alternatively, you can specify fields explicitly:
+        # fields = ['title', 'author', 'published_date', 'isbn', 'price']
+```
 
 ### Creating Basic API Views
 
 - Function based views
 
-  ```python
-  from rest_framework.decorators import api_view
-  from rest_framework.response import Response
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-  @api_view(['GET'])
-  def book_list(request):
-      books = Book.objects.all()
-      serializer = BookSerializer(books, many=True)
-      return Response(serializer.data)
-  ```
+@api_view(['GET'])
+def book_list(request):
+    books = Book.objects.all()
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+```
 
 - Class-Based Views (CBVs)
 
@@ -120,5 +137,113 @@
           serializer = BookSerializer(books, many=True)
           return Response(serializer.data)
   ```
+
+- Complete view code with both the views doing same task
+
+```python
+from django.shortcuts import render
+from .serializers import BookSerializer
+from .models import Book
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+@api_view(['GET'])
+def book_list(request):
+    books = Book.objects.all()
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
+class BookList(APIView):
+    def get(self, request):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data)
+
+```
+
+- Add urls
+
+Change the urls.py inside app, create file if does not exist
+
+```python
+from django.contrib import admin
+from django.urls import path
+from .views import book_list, BookList
+
+urlpatterns = [
+    path('fbv/', book_list),
+    path('cbv/', BookList.as_view()),
+]
+```
+
+Change the project's urls.py
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/books/', include('books.urls')),
+]
+
+```
+
+- Create a superuser to add some books
+
+```bash
+python3 manage.py createsuperuser
+```
+
+![alt text](image.png)
+
+- Make migrations
+
+```bash
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
+- Register the models to admin site
+
+```python
+from django.contrib import admin
+from .models import Book
+
+# Register your models here.
+
+admin.site.register(Book)
+```
+
+- Run the server
+
+```bash
+python3 manage.py runserver
+```
+
+`Visit localhost:8000/admin`
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+Login with the super user
+
+![alt text](image-3.png)
+
+- Create some books
+
+- Hit the api end point
+
+`http://localhost:8000/api/books/cbv/`
+
+![alt text](image-4.png)
+
+`http://localhost:8000/api/books/fbv/`
+
+![alt text](image-5.png)
 
 These steps provide a strong foundation, introducing you to the key concepts and basic setup of Django Rest Framework. You’ll start building simple APIs using function-based and class-based views, giving you practical experience with DRF right from the start.

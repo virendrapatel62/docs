@@ -198,7 +198,7 @@ urlpatterns = [
 python3 manage.py createsuperuser
 ```
 
-![alt text](image.png)
+![alt text](images/image.png)
 
 - Make migrations
 
@@ -226,13 +226,13 @@ python3 manage.py runserver
 
 `Visit localhost:8000/admin`
 
-![alt text](image-1.png)
+![alt text](images/image-1.png)
 
-![alt text](image-2.png)
+![alt text](images/image-2.png)
 
 Login with the super user
 
-![alt text](image-3.png)
+![alt text](images/image-3.png)
 
 - Create some books
 
@@ -240,10 +240,10 @@ Login with the super user
 
 `http://localhost:8000/api/books/cbv/`
 
-![alt text](image-4.png)
+![alt text](images/image-4.png)
 
 `http://localhost:8000/api/books/fbv/`
 
-![alt text](image-5.png)
+![alt text](images/image-5.png)
 
 These steps provide a strong foundation, introducing you to the key concepts and basic setup of Django Rest Framework. You’ll start building simple APIs using function-based and class-based views, giving you practical experience with DRF right from the start.
